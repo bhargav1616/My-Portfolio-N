@@ -20,7 +20,7 @@ export default function HomePage() {
     <div ref={containerRef} className="min-h-screen bg-black text-white overflow-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-cyan-900/20" />
+        <div className="absolute inset-0 bg-" />
         <motion.div 
           animate={{ 
             rotate: 360,

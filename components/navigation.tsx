@@ -33,10 +33,11 @@ export default function Navigation() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? "bg-black/95 backdrop-blur-md border-b border-gray-800" : "bg-transparent"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300
+    bg-black/95 backdrop-blur-lg border-b border-gray-800
+  `}
       >
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -76,11 +77,10 @@ export default function Navigation() {
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className={`relative flex items-center space-x-2 px-6 py-3 rounded-none transition-all duration-300 ${
-                          isActive
-                            ? "text-black bg-gradient-to-r from-emerald-400 to-cyan-400"
-                            : "text-gray-300 hover:text-white"
-                        }`}
+                        className={`relative flex items-center space-x-2 px-6 py-3 rounded-none transition-all duration-300 ${isActive
+                          ? "text-black bg-gradient-to-r from-emerald-400 to-cyan-400"
+                          : "text-gray-300 hover:text-white"
+                          }`}
                       >
                         <motion.div
                           animate={isActive ? { rotate: 360 } : {}}
@@ -89,7 +89,7 @@ export default function Navigation() {
                           <item.icon size={18} />
                         </motion.div>
                         <span className="font-medium">{item.name}</span>
-                        
+
                         {isActive && (
                           <motion.div
                             layoutId="activeTab"
@@ -160,11 +160,10 @@ export default function Navigation() {
                       <Link
                         href={item.href}
                         onClick={() => setIsOpen(false)}
-                        className={`flex items-center space-x-4 px-6 py-4 rounded-none transition-all duration-300 ${
-                          isActive
-                            ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-black"
-                            : "text-gray-300 hover:text-white hover:bg-gray-800/50"
-                        }`}
+                        className={`flex items-center space-x-4 px-6 py-4 rounded-none transition-all duration-300 ${isActive
+                          ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-black"
+                          : "text-gray-300 hover:text-white hover:bg-gray-800/50"
+                          }`}
                       >
                         <motion.div
                           whileHover={{ rotate: 360 }}
