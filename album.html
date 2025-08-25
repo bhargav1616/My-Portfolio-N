@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Vault Photo Album</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --dark: #0a1128;
+            --light: #f8f9fa;
+            --accent: #f72585;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+        }
+
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s ease;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+
+        .slide-up-enter-active,
+        .slide-up-leave-active {
+            transition: all 0.3s ease-out;
+        }
+
+        .slide-up-enter-from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .slide-up-leave-to {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .album-cover {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .album-cover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 30%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .album-cover:hover::after {
+            opacity: 1;
+        }
+
+        .album-cover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .photo-item {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        /* Chat bubble styling */
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin: 6px 0;
+            line-height: 1.4;
+            animation: bubble-appear 0.3s ease-out;
+        }
+
+        @keyframes bubble-appear {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            80% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Loading spinner */
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-indigo-600">Visual Vault</h1>
+                <p class="text-gray-500">Your personal photo gallery</p>
+            </div>
+            <div class="flex space-x-2">
+                <button id="albumsBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Albums</button>
+                <button id="chatBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Chat</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Albums Section -->
+            <div id="albumsSection">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-semibold">Your Photo Albums</h2>
+                    <button id="createAlbumBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        New Album
+                    </button>
+                </div>
+
+                <div id="albumsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Albums will be dynamically added here -->
+                </div>
+            </div>
+
+            <!-- Chat Section (Hidden by default) -->
+            <div id="chatSection" class="hidden">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden max-w-2xl mx-auto">
+                    <div class="p-4 bg-indigo-600 text-white">
+                        <h2 class="text-xl font-semibold">Visitor Messages</h2>
+                        <p class="text-indigo-100 text-sm">Messages will be sent directly to your phone</p>
+                    </div>
+                    
+                    <div id="chatMessages" class="h-96 overflow-y-auto p-4 bg-gray-50">
+                        <div class="flex justify-center items-center h-full text-gray-400" id="emptyChatState">
+                            <p>No messages yet. Send one to get started!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 border-t border-gray-200 flex">
+                        <input type="text" id="messageInput" placeholder="Type your message..." 
+                               class="flex-grow p-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button id="sendMessageBtn" class="px-4 py-3 bg-indigo-600 text-white rounded-r-lg hover:bg-indigo-700 transition">
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Album Modal -->
+    <div id="createAlbumModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full transform transition-all duration-300">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold mb-4">Create New Album</h3>
+                <div class="mb-4">
+                    <label for="albumName" class="block text-sm font-medium text-gray-700 mb-1">Album Name</label>
+                    <input type="text" id="albumName" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label for="albumCover" class="block text-sm font-medium text-gray-700 mb-1">Cover Image</label>
+                    <div class="flex items-center justify-center w-full">
+                        <label for="albumCoverInput" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <p class="mb-2 text-sm text-gray-500">Click to upload</p>
+                                <p class="text-xs text-gray-500" id="fileNameDisplay">No file selected</p>
+                            </div>
+                            <input id="albumCoverInput" type="file" class="hidden" accept="image/*" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-6 py-3 rounded-b-xl flex justify-end space-x-3">
+                <button id="cancelAlbumBtn" class="px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition">
+                    Cancel
+                </button>
+                <button id="saveAlbumBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                    Create Album
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Photos Modal -->
+    <div id="addPhotosModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full transform transition-all duration-300">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold mb-4">Add Photos to Album</h3>
+                <div class="mb-4">
+                    <div class="flex items-center justify-center w-full">
+                        <label for="photoUploadInput" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                                <p class="mb-2 text-sm text-gray-500">Drag and drop photos here, or click to select</p>
+                                <p class="text-xs text-gray-500">Supports JPEG, PNG</p>
+                            </div>
+                            <input id="photoUploadInput" type="file" class="hidden" accept="image/*" multiple />
+                        </label>
+                    </div>
+                </div>
+                <div id="uploadedPhotosPreview" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-4">
+                    <!-- Preview of selected photos will appear here -->
+                </div>
+            </div>
+            <div class="bg-gray-50 px-6 py-3 rounded-b-xl flex justify-end space-x-3">
+                <button id="cancelPhotoUploadBtn" class="px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition">
+                    Cancel
+                </button>
+                <button id="savePhotosBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                    Upload Photos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Album View Modal -->
+    <div id="albumViewModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-xl max-w-5xl w-full transform transition-all duration-300">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold" id="albumViewTitle">Album Name</h3>
+                    <div class="flex space-x-2">
+                        <button id="addPhotosToAlbumBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                            </svg>
+                            Add Photos
+                        </button>
+                        <button id="closeAlbumViewBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                            Close
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="albumPhotosGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <!-- Album photos will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Photo Modal -->
+    <div id="viewPhotoModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-50 hidden">
+        <div class="relative max-w-5xl w-full max-h-screen h-full">
+            <button id="closePhotoViewBtn" class="absolute top-4 right-4 z-10 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-70">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="flex items-center justify-center h-full">
+                <img id="fullSizePhoto" src="" alt="" class="max-h-full max-w-full object-contain" />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App state
+        const state = {
+            currentView: 'albums',
+            albums: [
+                {
+                    id: '1',
+                    name: 'Vacation 2023',
+                    coverUrl: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6eb79c89-db1f-49ec-be8a-5ceff87e8ed5.png',
+                    photos: [
+                        'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6805b2bb-ef53-4560-b3b1-770f166cdf25.png',
+                        'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/84700470-2791-464a-a802-6edd503298e7.png'
+                    ],
+                    createdAt: '2023-07-15'
+                },
+                {
+                    id: '2',
+                    name: 'Family Gatherings',
+                    coverUrl: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6f55ecd1-8d07-4c3a-bd32-50326bd8a27b.png',
+                    photos: [
+                        'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a2ce888c-7761-4b9d-8562-66268983074e.png',
+                        'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d3a92455-151d-4af7-a160-dcf1765044da.png',
+                        'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/11f128b8-c95b-4716-aee0-cc6655c3389c.png'
+                    ],
+                    createdAt: '2023-05-20'
+                },
+                {
+                    id: '3',
+                    name: 'Work Projects',
+                    coverUrl: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1365ba73-e99e-4e5f-83dc-46216caaeae5.png',
+                    photos: [
+                        'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/c277eddd-8f0e-4c0c-849d-c2d7f2e5e729.png',
+                        'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2dff3d53-3f72-4c96-b2bd-edd8fc2d15fc.png'
+                    ],
+                    createdAt: '2023-09-10'
+                }
+            ],
+            currentAlbum: null,
+            messages: [],
+            uploadedPhotos: []
+        };
+
+        // DOM Elements
+        const albumsSection = document.getElementById('albumsSection');
+        const chatSection = document.getElementById('chatSection');
+        const albumsBtn = document.getElementById('albumsBtn');
+        const chatBtn = document.getElementById('chatBtn');
+        const albumsGrid = document.getElementById('albumsGrid');
+        const createAlbumBtn = document.getElementById('createAlbumBtn');
+        const createAlbumModal = document.getElementById('createAlbumModal');
+        const cancelAlbumBtn = document.getElementById('cancelAlbumBtn');
+        const saveAlbumBtn = document.getElementById('saveAlbumBtn');
+        const albumName = document.getElementById('albumName');
+        const albumCoverInput = document.getElementById('albumCoverInput');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const addPhotosModal = document.getElementById('addPhotos');
