@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="100%" height="100%" fill="#0b0b0b"/>
+  <g transform="translate(128,128)">
+    <!-- rounded cube -->
+    <rect x="0" y="0" rx="64" ry="64" width="768" height="768" fill="#101010" stroke="url(#g1)" stroke-width="4"/>
+    <!-- BJ monogram -->
+    <g transform="translate(112,120)" fill="none" stroke="url(#g1)" stroke-width="32" stroke-linecap="round">
+      <!-- B -->
+      <path d="M80 32 v520 h160 c110 0 168 -60 168 -128 c0 -54 -34 -98 -102 -114 c74 -16 118 -60 118 -128 c0 -90 -78 -150 -194 -150 h-150z" filter="url(#glow)"/>
+      <!-- J -->
+      <path d="M520 32 v420 c0 106 -86 192 -192 192 h-70" filter="url(#glow)"/>
+    </g>
+    <!-- brackets -->
+    <g transform="translate(72,64)" stroke="url(#g1)" stroke-width="16" fill="none" opacity="0.8">
+      <path d="M0,320 c0,-220 40,-260 160,-260" />
+      <path d="M0,448 c0,220 40,260 160,260" />
+      <path d="M784,320 c0,-220 -40,-260 -160,-260" />
+      <path d="M784,448 c0,220 -40,260 -160,260" />
+    </g>
+  </g>
+</svg>

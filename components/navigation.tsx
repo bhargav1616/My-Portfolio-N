@@ -48,7 +48,8 @@ export default function Navigation() {
                 className="relative"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                  <Code2 size={24} className="text-black" />
+                  <img src="/logo.svg" alt="" />
+                  {/* <Code2 size={24} className="text-black" /> */}
                 </div>
                 <motion.div
                   animate={{ rotate: 360 }}
@@ -56,10 +57,10 @@ export default function Navigation() {
                   className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-lg blur opacity-30"
                 />
               </motion.div>
-              <div className="hidden sm:block">
+              {/* <div className="hidden sm:block">
                 <div className="text-xl font-black text-white">BHARGAV</div>
                 <div className="text-xs text-emerald-400 font-medium tracking-wider">DEVELOPER</div>
-              </div>
+              </div> */}
             </Link>
 
             {/* Desktop Menu */}
