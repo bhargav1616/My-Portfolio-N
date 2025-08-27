@@ -38,6 +38,28 @@ const workingHours = [
   { day: "Sunday", hours: "Closed" }
 ]
 
+// 🔔 Simple Toast component
+function Toast({ message, type }: { message: string; type: "success" | "error" | "warning" }) {
+  if (!message) return null
+  const bg =
+    type === "success"
+      ? "bg-emerald-600"
+      : type === "error"
+      ? "bg-red-600"
+      : "bg-orange-500"
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 50, y: 50 }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
+      exit={{ opacity: 0 }}
+      className={`fixed bottom-6 right-6 px-5 py-3 rounded-xl text-white font-medium shadow-lg ${bg}`}
+    >
+      {message}
+    </motion.div>
+  )
+}
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',
@@ -48,20 +70,34 @@ export default function ContactPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "warning" } | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+
+      if (res.ok) {
+        setIsSubmitted(true)
+        setFormData({ name: "", email: "", company: "", budget: "", message: "" })
+        setToast({ message: "✅ Message Sent Successfully!", type: "success" })
+      } else {
+        setToast({ message: "❌ Failed to send message.", type: "error" })
+      }
+    } catch (err) {
+      setToast({ message: "⚠️ Something went wrong!", type: "warning" })
+    }
+
     setIsSubmitting(false)
-    setIsSubmitted(true)
-    setFormData({ name: '', email: '', company: '', budget: '', message: '' })
-    
-    // Reset success message after 3 seconds
-    setTimeout(() => setIsSubmitted(false), 3000)
+
+    // Hide toast after 3 sec
+    setTimeout(() => setToast(null), 3000)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -94,7 +130,7 @@ export default function ContactPage() {
             </motion.div>
             
             <h1 className="text-5xl lg:text-7xl font-black mb-6">
-              <span className="block text-gray-400">LET'S</span>
+              <span className="block text-gray-400">LET&apos;S</span>
               <span className="block bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
                 CONNECT
               </span>
@@ -122,11 +158,7 @@ export default function ContactPage() {
 
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.4 }}
-                      >
+                      <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Full Name *
                         </label>
@@ -139,13 +171,9 @@ export default function ContactPage() {
                           required
                           className="bg-gray-800/50 border-gray-700 text-white placeholder-gray-500 focus:border-emerald-500 focus:ring-emerald-500/20"
                         />
-                      </motion.div>
+                      </div>
 
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.5 }}
-                      >
+                      <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Email Address *
                         </label>
@@ -158,15 +186,11 @@ export default function ContactPage() {
                           required
                           className="bg-gray-800/50 border-gray-700 text-white placeholder-gray-500 focus:border-emerald-500 focus:ring-emerald-500/20"
                         />
-                      </motion.div>
+                      </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.6 }}
-                      >
+                      <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Company
                         </label>
@@ -178,13 +202,9 @@ export default function ContactPage() {
                           onChange={handleChange}
                           className="bg-gray-800/50 border-gray-700 text-white placeholder-gray-500 focus:border-emerald-500 focus:ring-emerald-500/20"
                         />
-                      </motion.div>
+                      </div>
 
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.7 }}
-                      >
+                      <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Project Budget
                         </label>
@@ -200,14 +220,10 @@ export default function ContactPage() {
                           <option value="$10k-$25k">$10,000 - $25,000</option>
                           <option value="$25k+">$25,000+</option>
                         </select>
-                      </motion.div>
+                      </div>
                     </div>
 
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.8 }}
-                    >
+                    <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         Project Details *
                       </label>
@@ -220,13 +236,9 @@ export default function ContactPage() {
                         rows={6}
                         className="bg-gray-800/50 border-gray-700 text-white placeholder-gray-500 focus:border-emerald-500 focus:ring-emerald-500/20 resize-none"
                       />
-                    </motion.div>
+                    </div>
 
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.9 }}
-                    >
+                    <div>
                       <Button
                         type="submit"
                         disabled={isSubmitting || isSubmitted}
@@ -245,7 +257,7 @@ export default function ContactPage() {
                         )}
                         {isSubmitting ? 'Sending...' : isSubmitted ? 'Message Sent!' : 'Send Message'}
                       </Button>
-                    </motion.div>
+                    </div>
                   </form> 
                 </CardContent>
               </Card>
@@ -323,6 +335,9 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      {/* Toast */}
+      {toast && <Toast message={toast.message} type={toast.type} />}
     </div>
   )
 }
