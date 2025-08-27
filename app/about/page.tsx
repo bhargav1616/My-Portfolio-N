@@ -7,9 +7,8 @@ import { Card, CardContent } from "@/components/ui/card"
 
 const skills = [
   { name: "Frontend", level: 95, color: "emerald" },
-  { name: "Backend", level: 88, color: "cyan" },
+  { name: "Backend", level: 60, color: "cyan" },
   { name: "Database", level: 85, color: "blue" },
-  { name: "DevOps", level: 78, color: "purple" },
   { name: "Mobile", level: 82, color: "pink" },
   { name: "UI/UX", level: 90, color: "orange" }
 ]
@@ -164,7 +163,7 @@ export default function AboutPage() {
                     className="p-6 bg-gradient-to-r from-emerald-900/20 to-cyan-900/20 border border-emerald-500/30"
                   >
                     <Award size={32} className="text-emerald-400 mb-3" />
-                    <h4 className="text-lg font-bold text-white mb-2">50+ Projects Delivered</h4>
+                    <h4 className="text-lg font-bold text-white mb-2">5+ Projects Delivered</h4>
                     <p className="text-gray-300">Successfully completed projects across various industries</p>
                   </motion.div>
 

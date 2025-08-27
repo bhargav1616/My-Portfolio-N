@@ -14,9 +14,9 @@ const projects = [
     category: "Productivity",
     description: "Worldwide Sales, Sales %, and Total Revenue charts with data tables for clear business performance insights.",
     image: "/project_img/ReD-zz.PNG",
-    technologies: ["React", "Node.js", "AI/ML", "MongoDB", "Stripe"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com/bhargavjadav/neurocommerce",
+    technologies: ["React", "CSS" , "JavaScript", ],
+    liveUrl: "https://red-z.netlify.app/",
+    // githubUrl: "https://github.com/bhargavjadav/neurocommerce",
     featured: false
   },
   {
@@ -25,9 +25,9 @@ const projects = [
     category: "Productivity",
     description: "A sleek web app showcasing the latest Nike shoe collections with detailed views and user reviews.",
     image: "/project_img/react_one.PNG",
-    technologies: ["Next.js", "PostgreSQL", "Socket.io", "TypeScript"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com/bhargavjadav/taskflow",
+    technologies: ["React", "CSS" , "JavaScript", ],
+    liveUrl: "https://nike-shoess.netlify.app/",
+    // githubUrl: "https://github.com/bhargavjadav/taskflow",
     featured: false
   },
   {
@@ -36,9 +36,9 @@ const projects = [
     category: "E-Commerce",
     description: "Flipkart clone with product listing, cart, checkout, user authentication, and responsive design for ecommerce practice.",
     image: "/project_img/flipkart.jpeg",
-    technologies: ["Vue.js", "Python", "FastAPI", "Redis"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com/bhargavjadav/cryptotracker",
+    technologies: ["React", "CSS" , "JavaScript", ],
+    liveUrl: "https://flipkarrtt-clone.netlify.app",
+    // githubUrl: "https://github.com/bhargavjadav/cryptotracker",
     featured: false
   },
   {
@@ -47,9 +47,9 @@ const projects = [
     category: "Shop",
     description: "All Types Coffee available and home dilivery.Best qualitys Coffee. Your choise Coffee order",
     image: "/project_img/coffee.jpeg",
-    technologies: ["React Native", "Firebase", "Node.js", "ML"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com/bhargavjadav/mindspace",
+    technologies: ["React", "CSS" , "JavaScript", ],
+    liveUrl: "https://coffee-baar.netlify.app",
+    // githubUrl: "https://github.com/bhargavjadav/mindspace",
     featured: false
   },
   {
@@ -58,9 +58,9 @@ const projects = [
     category: "Food Delivery",
     description: "A modern food delivery web app inspired by Swiggy, cart system, restaurant listings, and responsive UI for smooth ordering.",
     image: "/project_img/swiggy.PNG",
-    technologies: ["Next.js", "Docker", "WebRTC", "MongoDB"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com/bhargavjadav/codelab",
+    technologies: ["React", "CSS" , "JavaScript", ],
+    liveUrl: "https://swiggyy-clone.netlify.app",
+    // githubUrl: "https://github.com/bhargavjadav/codelab",
     featured: false
   },
   {
@@ -69,9 +69,20 @@ const projects = [
     category: "Environment",
     description: "Carbon footprint tracking app with sustainability recommendations and community challenges.",
     image: "/project_img/WeatherApp.jpeg",
-    technologies: ["React", "Express", "PostgreSQL", "Charts.js"],
+    technologies: ["React", "CSS" , "JavaScript", ],
     liveUrl: "https://example.com",
-    githubUrl: "https://github.com/bhargavjadav/ecotrack",
+    // githubUrl: "https://github.com/bhargavjadav/ecotrack",
+    featured: false
+  },
+  {
+    id: 7,
+    title: "Luxury Cars Showroom",
+    category: "Dealership",
+    description: "Explore premium luxury cars with elegance, power, and unmatched driving experience.",
+    image: "/project_img/luxury_car.PNG",
+    technologies: ["HTML", "CSS" , "JavaScript", ],
+    liveUrl: "https://luxury-cars-showroomm.netlify.app",
+    // githubUrl: "https://github.com/bhargavjadav16",
     featured: false
   }
 ]
@@ -80,7 +91,7 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
   const [isHovered, setIsHovered] = useState(false)
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
-  
+
   const rotateX = useSpring(useTransform(mouseY, [-300, 300], [10, -10]))
   const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-10, 10]))
 
@@ -114,11 +125,10 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
               alt={project.title}
               width={600}
               height={400}
-              className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${
-                project.featured ? 'h-64' : 'h-48'
-              }`}
+              className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${project.featured ? 'h-64' : 'h-48'
+                }`}
             />
-            
+
             {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -162,16 +172,16 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
               <h3 className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
                 {project.title}
               </h3>
-              <ArrowUpRight 
-                size={20} 
-                className="text-gray-400 group-hover:text-emerald-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" 
+              <ArrowUpRight
+                size={20}
+                className="text-gray-400 group-hover:text-emerald-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all"
               />
             </div>
-            
+
             <p className="text-gray-300 mb-4 flex-1 leading-relaxed">
               {project.description}
             </p>
-            
+
             <div className="flex flex-wrap gap-2">
               {project.technologies.map((tech: string) => (
                 <Badge
@@ -196,7 +206,7 @@ export default function ProjectsPage() {
       {/* Hero Section */}
       <section className="relative py-32 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 via-black to-cyan-900/10" />
-        
+
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -212,16 +222,16 @@ export default function ProjectsPage() {
             >
               <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" />
             </motion.div>
-            
+
             <h1 className="text-5xl lg:text-7xl font-black mb-6">
               <span className="block text-gray-400">FEATURED</span>
               <span className="block bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
                 PROJECTS
               </span>
             </h1>
-            
+
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              A curated selection of my most impactful work, showcasing innovation, 
+              A curated selection of my most impactful work, showcasing innovation,
               technical excellence, and creative problem-solving.
             </p>
           </motion.div>
